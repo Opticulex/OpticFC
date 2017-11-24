@@ -11,14 +11,28 @@ Currently this version does not have a Gyro or Accel integrated into it for tech
 
 ## How to use
 
-The controller uses an Arduino Uno R3, FS-iA6B Reciever and MPU-6050 I2C Gyro/Accel module as well as an LED, some DuPont wires and a mini breadboard. It uses [this schematic](https://github.com/Opticulex/OpticFC/blob/master/OpticFC_noGyroAccel.png). It is recommended you use a Flysky FS-i6 radio for compatibility. Make sure your radio has PPM output turned off and Channel 5 is configured as your arm switch (2 position switch) and Channel 6 is configured as a 3 position switch.
+The controller uses an Arduino Uno R3, FS-iA6B Reciever and MPU-6050 I2C Gyro/Accel module as well as an LED, some DuPont wires and a mini breadboard. It is recommended you use a Flysky FS-i6 radio for compatibility. Make sure your radio has PPM output turned off and Channel 5 is configured as your arm switch (2 position switch) and Channel 6 is configured as a 3 position switch.
+
+### How to wire up
+The wiring for the system uses [this schematic](https://github.com/Opticulex/OpticFC/blob/master/OpticFC_noGyroAccel.png).
 
 ### How to calibrate ESCs
 
 Turn on your Aruino with your radio armed and pitch set to max. Wait for the LED to indicate ESC calibration (see below) and then let go of the sticks and disarm. It will calibrate all ESCs and then resume normal startup. This takes about 20 seconds. It is recommended you do this without props on.
 
-## LED Indicator
+### Channels
 
+**Channel 5:** 
+
+>1500 - Disarmed and idle
+<1500 - Armed, motors spinning at min_throttle
+
+**Channel 6:** 
+
+Channel 6 is not defaultly configured to anything but is used as a mode switch between FST mode (less input delay, less precision) and SMT mode (more input delay, smoother flight) on some experimental versions and also functions as a 'signal lost indicator'. None of thes features are good enough to be production-ready though.
+
+
+## LED Indicator
 
 The system uses its LED indicator to display its current status and give feedback.
 
