@@ -1,5 +1,5 @@
-/* /////////////////// - OpticFC v1.0.0a - //////////////////////////////////////////////////////////////////////////////
- * By Opticulex; Release date: 14/10/2017                                                                              //
+/* /////////////////// - OpticFC v1.0.1a - //////////////////////////////////////////////////////////////////////////////
+ * By Opticulex; Release date: 01/12/2017                                                                              //
  *                                                                                                                     //
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR                                          //
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,                                            //
@@ -15,14 +15,10 @@
  * All the rest of the parts can just be ones you'd just put in any quad.                                              //
  *                                                                                                                     //
  * NOTE: Some older ESC's (and ones for larger motors etc) use a 3-wire servo connector while newer ones (that have    //
- * protocols like One/Multi/D-Shot on them) tend to only have a 2-wire connector or just bare solder pads. These new   //
- * ESCs will work if you connect GND and Signal up (see your ESCS manual for a schematic). This code is designed to    //
- * work with the Racerstar RS20A an RS30A ESC's.                                                                       //
+ * protocols like One/Multi/D_Shot on them) tend to only have a 2-wire connector or just bare solder pads. These new   //
+ * ESCs will work if you connect GND and Signal up (see your ESC's manual for a schematic). This code is designed to   //
+ * work with the Racerstar RS20A an RS30A ESC's but will work with most PWM input-compatible ones.                     //
  *                                                                                                                     //
- * ======= ABOUT THE CODE =======                                                                                      //
- * This code does not use a PID controller in it for simplicity and keeps everything down to the basics. It instead    //
- * just corrects for the Gyro/Accel error, like the Proportional of a PID loop. A mix/hybrid of the Derivative and     //
- * the Integral is used as well but not to the level of a real PID controller would. Hack one in if you really want :) //
  *                                                                                                                     //
  */                                                                                                                    //
 #include <Servo.h>                                                                                                     //
@@ -74,16 +70,16 @@ void FC_ReadRX_lite() {                                                         
   }                                                                                                                    //
 void FC_ReadRX_aux() {                                                                                                 // RX CHECK - Arm check (only check AUX1, i.e. if quad is armed)
   FC_AUX_in[0]=pulseIn(12, HIGH); }                                                                                    //
-void FC_ReadGyro(){                                                                                                    // Read gyro values
+void FC_ReadGyro(){                                                                                                    // Read gyro values TBD
                                                                                                                        //
 }                                                                                                                      //
-void FC_ReadAccel(){                                                                                                   // Read accel values
+void FC_ReadAccel(){                                                                                                   // Read accel values TBD
                                                                                                                        //
 }                                                                                                                      //
-void FC_CrrctGyro(){                                                                                                   // Correct for gyro error
+void FC_CrrctGyro(){                                                                                                   // Correct for gyro error TBD
                                                                                                                        //
 }                                                                                                                      //
-void FC_CrrctAccel(){                                                                                                  // Correct for accel error
+void FC_CrrctAccel(){                                                                                                  // Correct for accel error TBD
                                                                                                                        //
 }                                                                                                                      //
 void FC_MotorMix(){                                                                                                    // Mix raw channel values for each motor
@@ -188,10 +184,10 @@ void setup(){                                                                   
   } FC_RXinCorrect();                                                                                                  //
   while (FC_Cycle==0 and FC_AUX_in[0]>=1500 and FC_RPTY_in[1]>=1870){                                                  // Go into ESC calib mode if armed and pitch full forward
     FC_LED1_Blink(3,100); delay(1000);                                                                                 // LED Indicator: blink 'ESC calibrate' sequence
-    FC_Motors[0]=FC_stage1; FC_Motors[1]=FC_stage1; FC_Motors[2]=FC_stage1; FC_Motors[3]=FC_stage1; FC_MotorSet();     //
-    FC_LED1_Blink(20,40); delay(10000);                                                                                //
-    FC_Motors[0]=FC_stage2; FC_Motors[1]=FC_stage2; FC_Motors[2]=FC_stage2; FC_Motors[3]=FC_stage2; FC_MotorSet();     //
-    FC_LED1_Blink(20,40); delay(10000); FC_ReadRX();                                                                   //
+    FC_Motors[0]=FC_stage1; FC_Motors[1]=FC_stage1; FC_Motors[2]=FC_stage1; FC_Motors[3]=FC_stage1; FC_MotorSet();     // Set all motor vals to stage1 (default 2000) to enter calib mode
+    FC_LED1_Blink(20,40); delay(10000);                                                                                // Wait for ESC to respond (some ESC's take a few seconds)
+    FC_Motors[0]=FC_stage2; FC_Motors[1]=FC_stage2; FC_Motors[2]=FC_stage2; FC_Motors[3]=FC_stage2; FC_MotorSet();     // Set all motor vals to stage2 (default 1000) to exit calib mode
+    FC_LED1_Blink(20,40); delay(10000); FC_ReadRX();                                                                   // Wait for ESC to respond (some ESC's take a few seconds)
   }                                                                                                                    //
   while (FC_Cycle==0 and FC_AUX_in[0]>=1500){                                                                          // Pause startup is quad is in armed state
     FC_LED1_Blink(2,100); delay(1000); FC_ReadRX();                                                                    // =- LED Indicator: blink 'FC Startup arm error' sequence
@@ -219,8 +215,8 @@ void loop(){                                                                    
   if (FC_Arm==true){                                                                                                   // If armed
     ++FC_ArmCycle;                                                                                                     // Increment FC arm cycle counter
     FC_MotorMix();                                                                                                     // Mix channel values to work with motors
-    FC_ReadGyro(); FC_CrrctGyro();                                                                                     // Read/Correct for gyro
-    FC_ReadAccel(); FC_CrrctAccel();                                                                                   // Read/Correct for accel
+   // FC_ReadGyro(); FC_CrrctGyro();                                                                                   // Read/Correct for gyro
+   // FC_ReadAccel(); FC_CrrctAccel();                                                                                 // Read/Correct for accel
     FC_MotorSet();                                                                                                     // Push motor values to ESC's as a signal
   } else {                                                                                                             //
     FC_ArmCycle=0;                                                                                                     // If not armed reset FC arm cycle counter
